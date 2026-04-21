@@ -1,9 +1,9 @@
 # VC-and-Sustainability
 
-Executive Summary
+## Executive Summary
 This research evaluates the causal impact of the State Small Business Credit Initiative (SSBCI) venture capital allocations on state-level venture capital (VC) ecosystems, green innovation, and downstream renewable energy outcomes. Utilizing a comprehensive state-level panel dataset spanning 2018 to 2025, the study employs a Two-Way Fixed Effects (TWFE) Difference-in-Differences (DiD) framework to isolate the program's effects.
 
-Key Findings:
+### Key Findings:
 
 Catalyzed Early-Stage Deal Flow: The SSBCI intervention successfully stimulated early-stage entrepreneurship, leading to a statistically significant increase in the total number of VC deals in treated states (p < 0.05).
 Null Effect on Total Dollars and Patents: While deal volume increased, the program did not significantly impact the overall VC dollar volume or the generation of green patents per capita. This indicates that SSBCI funds primarily seeded a higher volume of smaller, early-stage rounds rather than funding mature, capital-intensive "mega-rounds" or driving immediate deep-tech breakthroughs.

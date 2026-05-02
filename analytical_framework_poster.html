@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analytical Framework — SSBCI & Green Innovation</title>
+<title>Analytical Framework</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-
+ 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   body {
     background: #f5f4f0;
     font-family: 'DM Sans', sans-serif;
@@ -19,7 +19,7 @@
     min-height: 100vh;
     padding: 40px 24px;
   }
-
+ 
   .page {
     background: #ffffff;
     width: 100%;
@@ -28,13 +28,13 @@
     padding: 52px 56px 56px;
     box-shadow: 0 2px 24px rgba(0,18,84,0.08);
   }
-
+ 
   header {
     margin-bottom: 44px;
     padding-bottom: 28px;
     border-bottom: 3px solid #001254;
   }
-
+ 
   .eyebrow {
     font-family: 'DM Sans', sans-serif;
     font-size: 12px;
@@ -44,7 +44,7 @@
     color: #FFC72C;
     margin-bottom: 10px;
   }
-
+ 
   h1 {
     font-family: 'Source Serif 4', serif;
     font-size: 30px;
@@ -53,16 +53,16 @@
     line-height: 1.2;
     letter-spacing: -0.01em;
   }
-
+ 
   .subtitle {
     margin-top: 8px;
     font-size: 15px;
     color: #4a5568;
     font-weight: 400;
   }
-
+ 
   svg { width: 100%; height: auto; display: block; }
-
+ 
   .legend {
     margin-top: 32px;
     padding-top: 24px;
@@ -72,7 +72,7 @@
     flex-wrap: wrap;
     align-items: center;
   }
-
+ 
   .legend-label {
     font-size: 11px;
     font-weight: 600;
@@ -81,13 +81,13 @@
     color: #718096;
     margin-right: 4px;
   }
-
+ 
   .legend-items {
     display: flex;
     gap: 28px;
     flex-wrap: wrap;
   }
-
+ 
   .legend-item {
     display: flex;
     align-items: center;
@@ -96,13 +96,37 @@
     color: #2d3748;
     font-weight: 400;
   }
-
-  .legend-swatch {
-    width: 20px;
-    height: 14px;
-    border-radius: 3px;
-    flex-shrink: 0;
+ 
+  .back-home {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1b5fa6;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 7px 14px;
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
   }
+ 
+  .back-home:hover {
+    background: #ffffff;
+    border-color: rgba(27,95,166,0.4);
+    color: #0a2e52;
+    box-shadow: 0 3px 10px rgba(10,46,82,0.1);
+  }
+ 
+ 
 </style>
 </head>
 <body>

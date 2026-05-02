@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytical Framework — SSBCI & Green Innovation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f4f0;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 24px;
+  }
+
+  .page {
+    background: #ffffff;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 4px;
+    padding: 52px 56px 56px;
+    box-shadow: 0 2px 24px rgba(0,18,84,0.08);
+  }
+
+  header {
+    margin-bottom: 44px;
+    padding-bottom: 28px;
+    border-bottom: 3px solid #001254;
+  }
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #FFC72C;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #001254;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    margin-top: 8px;
+    font-size: 15px;
+    color: #4a5568;
+    font-weight: 400;
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  .legend {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .legend-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #718096;
+    margin-right: 4px;
+  }
+
+  .legend-items {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    color: #2d3748;
+    font-weight: 400;
+  }
+
+  .legend-swatch {
+    width: 20px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Analytical Framework · Methods</p>
+    <h1>SSBCI State-Backed VC &amp; Green Innovation: Two-Model Research Design</h1>
+    <p class="subtitle">State × year panel · 51 U.S. jurisdictions · 2015–2025 · 44 treated states, 7 never-treated controls</p>
+  </header>
+
+  <svg viewBox="0 0 980 660" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1.5 1.5L8.5 5L1.5 8.5" fill="none" stroke="#001254" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="arr-light" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1.5 1.5L8.5 5L1.5 8.5" fill="none" stroke="#84C8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- ═══════════════════════════════════════════════
+         ROW 1: Data inputs
+    ════════════════════════════════════════════════════ -->
+    <text x="490" y="18" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10.5" font-weight="600" letter-spacing="1.8" fill="#718096" text-decoration="none">DATA INPUTS</text>
+
+    <!-- Input 1: SSBCI Allocations -->
+    <rect x="14" y="28" width="216" height="70" rx="8" fill="#f0f4ff" stroke="#001254" stroke-width="1.5"/>
+    <text x="122" y="53" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" fill="#001254">SSBCI allocation data</text>
+    <text x="122" y="72" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#4a5568">binary presence + $ per capita</text>
+    <text x="122" y="88" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#718096">sbvc_allocations · ssbci_state_allocations</text>
+
+    <!-- Input 2: Green Patents -->
+    <rect x="250" y="28" width="210" height="70" rx="8" fill="#f0f4ff" stroke="#001254" stroke-width="1.5"/>
+    <text x="355" y="53" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" fill="#001254">Green patents</text>
+    <text x="355" y="72" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#4a5568">count + per capita · CPC Y02</text>
+    <text x="355" y="88" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#718096">green_patents_state_year · 2018–2023</text>
+
+    <!-- Input 3: VC Activity -->
+    <rect x="480" y="28" width="210" height="70" rx="8" fill="#f0f4ff" stroke="#001254" stroke-width="1.5"/>
+    <text x="585" y="53" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" fill="#001254">VC activity</text>
+    <text x="585" y="72" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#4a5568">deals, dollars, per capita</text>
+    <text x="585" y="88" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#718096">vc_deals · vc_activity_dollars · 2015–2025</text>
+
+    <!-- Input 4: Renewable Gen -->
+    <rect x="710" y="28" width="256" height="70" rx="8" fill="#f0f4ff" stroke="#001254" stroke-width="1.5"/>
+    <text x="838" y="53" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" fill="#001254">Renewable generation</text>
+    <text x="838" y="72" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#4a5568">MWh per capita</text>
+    <text x="838" y="88" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#718096">net_renewable_generation · 2015–2025</text>
+
+    <!-- ─── Connectors: inputs → analyses ─── -->
+    <line x1="280" y1="98" x2="280" y2="165" stroke="#001254" stroke-width="1.2" stroke-opacity="0.25" marker-end="url(#arr)"/>
+    <line x1="700" y1="98" x2="700" y2="165" stroke="#001254" stroke-width="1.2" stroke-opacity="0.25" marker-end="url(#arr)"/>
+
+
+    <!-- ═══════════════════════════════════════════════
+         ROW 2: Analyses
+    ════════════════════════════════════════════════════ -->
+
+    <!-- ANALYSIS 1: Panel OLS — navy fill -->
+    <rect x="14" y="172" width="450" height="242" rx="12" fill="#001254" stroke="#001254" stroke-width="0"/>
+
+    <!-- A1 header band -->
+    <text x="239" y="205" text-anchor="middle" font-family="Source Serif 4, serif" font-size="19" font-weight="700" fill="#ffffff">Analysis 1 · Panel OLS</text>
+    <text x="239" y="226" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="400" fill="#84C8FF">Does SBVC presence predict outcomes?</text>
+
+    <!-- A1 divider -->
+    <line x1="38" y1="240" x2="440" y2="240" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.2"/>
+
+    <!-- A1 inner boxes -->
+    <rect x="34" y="252" width="412" height="54" rx="7" fill="rgba(255,255,255,0.1)" stroke="#84C8FF" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="240" y="272" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="#FFC72C">Treatment variable</text>
+    <text x="240" y="291" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#cce8ff">ssbci_vc binary  or  vc_allocation_per_capita (continuous)</text>
+
+    <rect x="34" y="318" width="195" height="54" rx="7" fill="rgba(255,255,255,0.1)" stroke="#84C8FF" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="131" y="338" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="#FFC72C">Controls</text>
+    <text x="131" y="357" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#cce8ff">GDP per capita · population</text>
+
+    <rect x="241" y="318" width="205" height="54" rx="7" fill="rgba(255,255,255,0.1)" stroke="#84C8FF" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="343" y="338" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="#FFC72C">Fixed effects</text>
+    <text x="343" y="357" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#cce8ff">Year FE (γt) · state clusters</text>
+
+    <!-- A1 footer pill -->
+    <rect x="34" y="384" width="412" height="22" rx="6" fill="#FFC72C"/>
+    <text x="240" y="399" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11.5" font-weight="600" fill="#001254">PanelOLS · linearmodels · clustered standard errors</text>
+
+
+    <!-- ANALYSIS 2: Staggered DiD — light blue fill -->
+    <rect x="516" y="172" width="450" height="242" rx="12" fill="#001254" stroke="#001254" stroke-width="0"/>
+
+    <text x="741" y="205" text-anchor="middle" font-family="Source Serif 4, serif" font-size="19" font-weight="700" fill="#ffffff">Analysis 2 · Staggered DiD</text>
+    <text x="741" y="226" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="400" fill="#84C8FF">Did SSBCI allocation shift outcomes before vs. after?</text>
+
+    <line x1="540" y1="240" x2="942" y2="240" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.2"/>
+
+    <!-- A2 inner: treated/control side by side -->
+    <rect x="536" y="252" width="200" height="54" rx="7" fill="rgba(255,255,255,0.1)" stroke="#84C8FF" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="636" y="272" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="#FFC72C">Treated states (44)</text>
+    <text x="636" y="291" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#cce8ff">SSBCI VC fund established</text>
+
+    <rect x="746" y="252" width="200" height="54" rx="7" fill="rgba(255,255,255,0.1)" stroke="#84C8FF" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="846" y="272" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="#FFC72C">Control states (7)</text>
+    <text x="846" y="291" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#cce8ff">ID · MT · NH · SD · TX · UT · VT</text>
+
+    <rect x="536" y="318" width="410" height="54" rx="7" fill="rgba(255,255,255,0.1)" stroke="#84C8FF" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="741" y="338" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="#FFC72C">Staggered treatment timing</text>
+    <text x="741" y="357" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#cce8ff">allocation_year cohort · mostly 2022, some 2023</text>
+
+    <rect x="536" y="384" width="410" height="22" rx="6" fill="#FFC72C"/>
+    <text x="741" y="399" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11.5" font-weight="600" fill="#001254">Callaway-Sant'Anna (2021) · pyfixest · event study plot</text>
+
+
+    <!-- ─── Connector rail ─── -->
+    <line x1="239" y1="414" x2="239" y2="460" stroke="#001254" stroke-width="1.2" stroke-opacity="0.2"/>
+    <line x1="741" y1="414" x2="741" y2="460" stroke="#001254" stroke-width="1.2" stroke-opacity="0.2"/>
+    <line x1="239" y1="460" x2="741" y2="460" stroke="#001254" stroke-width="1.2" stroke-opacity="0.2"/>
+    <line x1="162" y1="460" x2="162" y2="474" stroke="#001254" stroke-width="1.2" stroke-opacity="0.2" marker-end="url(#arr)"/>
+    <line x1="490" y1="460" x2="490" y2="474" stroke="#001254" stroke-width="1.2" stroke-opacity="0.2" marker-end="url(#arr)"/>
+    <line x1="818" y1="460" x2="818" y2="474" stroke="#001254" stroke-width="1.2" stroke-opacity="0.2" marker-end="url(#arr)"/>
+
+    <!-- ═══════════════════════════════════════════════
+         ROW 3: Outcome variables
+    ════════════════════════════════════════════════════ -->
+    <text x="490" y="470" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10.5" font-weight="600" letter-spacing="1.8" fill="#718096">OUTCOME VARIABLES</text>
+
+    <!-- Outcome 1 -->
+    <rect x="14" y="480" width="294" height="80" rx="10" fill="#FFC72C" stroke="#FFC72C" stroke-width="0"/>
+    <text x="161" y="508" text-anchor="middle" font-family="Source Serif 4, serif" font-size="16" font-weight="700" fill="#001254">Green patents</text>
+    <text x="161" y="528" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12.5" font-weight="400" fill="#001254">Innovation output proxy</text>
+    <text x="161" y="547" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#3a4d0f">log1p · per capita · capped 2023</text>
+
+    <!-- Outcome 2 -->
+    <rect x="343" y="480" width="294" height="80" rx="10" fill="#FFC72C" stroke="#FFC72C" stroke-width="0"/>
+    <text x="490" y="508" text-anchor="middle" font-family="Source Serif 4, serif" font-size="16" font-weight="700" fill="#001254">Total VC activity</text>
+    <text x="490" y="528" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12.5" font-weight="400" fill="#001254">Crowding-in effect</text>
+    <text x="490" y="547" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#3a4d0f">log1p · dollars + deal count</text>
+
+    <!-- Outcome 3 -->
+    <rect x="672" y="480" width="294" height="80" rx="10" fill="#FFC72C" stroke="#FFC72C" stroke-width="0"/>
+    <text x="819" y="508" text-anchor="middle" font-family="Source Serif 4, serif" font-size="16" font-weight="700" fill="#001254">Renewable generation</text>
+    <text x="819" y="528" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12.5" font-weight="400" fill="#001254">Clean energy output</text>
+    <text x="819" y="547" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="400" fill="#3a4d0f">MWh per capita</text>
+
+
+    <!-- ═══════════════════════════════════════════════
+         ROW 4: Identification & Robustness
+    ════════════════════════════════════════════════════ -->
+    <text x="490" y="592" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10.5" font-weight="600" letter-spacing="1.8" fill="#718096">IDENTIFICATION &amp; ROBUSTNESS</text>
+
+    <!-- Check 1 -->
+    <rect x="14" y="600" width="454" height="52" rx="8" fill="#f0f4ff" stroke="#84C8FF" stroke-width="2"/>
+    <text x="241" y="621" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" fill="#001254">Parallel trends test</text>
+    <text x="241" y="641" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#4a5568">Plot 2015–2021 pre-period trends · treated vs. control</text>
+
+    <!-- Check 2 -->
+    <rect x="512" y="600" width="454" height="52" rx="8" fill="#f0f4ff" stroke="#84C8FF" stroke-width="2"/>
+    <text x="739" y="621" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" fill="#001254">Robustness checks</text>
+    <text x="739" y="641" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="400" fill="#4a5568">Exclude TX outlier · exclude CA · log1p transforms</text>
+
+  </svg>
+
+  <div class="legend">
+    <span class="legend-label">Key:</span>
+    <div class="legend-items">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#f0f4ff; border: 2px solid #001254;"></div>
+        Panel data inputs
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#001254;"></div>
+        Analytical models
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#FFC72C;"></div>
+        Outcome variables
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#f0f4ff; border: 2px solid #84C8FF;"></div>
+        Identification checks
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

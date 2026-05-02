@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSBCI VC Investment Map</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ffffff;
+    color: #1a1a2e;
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 48px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: #0d1117;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: #58a6ff;
+  }
+
+  .header p {
+    margin-top: 8px;
+    font-size: 0.72rem;
+    color: #555e6c;
+  }
+
+  .map-container {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+  }
+
+  #map svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .state-path {
+    stroke: #ffffff;
+    stroke-width: 0.6;
+    transition: opacity 0.15s;
+    cursor: pointer;
+  }
+
+  .state-path:hover { opacity: 0.82; stroke-width: 1.5; stroke: #f0f6ff; }
+
+  .bubble {
+    fill: #f97316;
+    fill-opacity: 0.55;
+    stroke: #fb923c;
+    stroke-width: 1;
+    pointer-events: none;
+    transition: r 0.3s;
+  }
+
+  .legends {
+    display: flex;
+    gap: 40px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .legend-block { flex: 0 0 auto; }
+
+  .legend-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555e6c;
+    margin-bottom: 8px;
+  }
+
+  .choropleth-ramp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ramp-bar {
+    width: 180px;
+    height: 10px;
+    border-radius: 2px;
+    background: linear-gradient(to right, #dbeafe, #93c5fd, #3b9ede, #1b5fa6, #0a2e52);
+  }
+
+  .ramp-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 180px;
+    margin-top: 4px;
+    font-size: 0.62rem;
+    color: #555e6c;
+  }
+
+  .bubble-legend {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  .bubble-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .bubble-circle {
+    background: #f97316;
+    opacity: 0.6;
+    border-radius: 50%;
+    border: 1px solid #fb923c;
+  }
+
+  .bubble-label {
+    font-size: 0.6rem;
+    color: #555e6c;
+    white-space: nowrap;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: #f8fafc;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 12px 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 1000;
+    max-width: 240px;
+  }
+
+  .tooltip.visible { opacity: 1; }
+
+  .tt-state {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: #0d1117;
+    margin-bottom: 8px;
+  }
+
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 4px;
+  }
+
+  .tt-label {
+    font-size: 0.62rem;
+    color: #555e6c;
+  }
+
+  .tt-value {
+    font-size: 0.78rem;
+    color: #1a1a2e;
+    font-weight: 500;
+  }
+
+  .tt-dot-vc { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3b9ede; margin-right: 5px; }
+  .tt-dot-alloc { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f97316; margin-right: 5px; }
+
+  .note {
+    margin-top: 20px;
+    font-size: 0.62rem;
+    color: #8b96a5;
+    text-align: center;
+    max-width: 700px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SSBCI <em>Venture Capital</em> Investment Landscape</h1>
+  <p>Pre-Program VC Activity (Choropleth) &nbsp;·&nbsp; SSBCI VC Allocation (Bubbles)</p>
+</div>
+
+<div class="map-container">
+  <div id="map"></div>
+</div>
+
+<div class="legends">
+  <div class="legend-block">
+    <div class="legend-title">Pre-SSBCI VC Deal Count</div>
+    <div class="choropleth-ramp">
+      <div>
+        <div class="ramp-bar"></div>
+        <div class="ramp-labels"><span>Low</span><span>High</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend-block">
+    <div class="legend-title">SSBCI VC Allocation</div>
+    <div class="bubble-legend">
+      <div class="bubble-item">
+        <div class="bubble-circle" style="width:12px;height:12px;"></div>
+        <div class="bubble-label">$20M</div>
+      </div>
+      <div class="bubble-item">
+        <div class="bubble-circle" style="width:20px;height:20px;"></div>
+        <div class="bubble-label">$75M</div>
+      </div>
+      <div class="bubble-item">
+        <div class="bubble-circle" style="width:30px;height:30px;"></div>
+        <div class="bubble-label">$130M</div>
+      </div>
+      <div class="bubble-item">
+        <div class="bubble-circle" style="width:40px;height:40px;"></div>
+        <div class="bubble-label">$219M</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  States shaded by pre-SSBCI VC deal count (log scale). Bubble size encodes SSBCI VC allocation. 
+  States with no SSBCI VC allocation (never-treated controls) are shown in dark grey. Hover a state for details.
+</div>
+
+<div class="tooltip" id="tooltip">
+  <div class="tt-state" id="tt-state"></div>
+  <div class="tt-row">
+    <span class="tt-label"><span class="tt-dot-vc"></span>VC Deals</span>
+    <span class="tt-value" id="tt-deals"></span>
+  </div>
+  <div class="tt-row">
+    <span class="tt-label"><span class="tt-dot-alloc"></span>VC Allocation</span>
+    <span class="tt-value" id="tt-alloc"></span>
+  </div>
+</div>
+
+<script>
+const stateData = [
+  {name:"Alabama",fips:"01",vcDeals:69,allocation:32700000},
+  {name:"Alaska",fips:"02",vcDeals:9,allocation:5200000},
+  {name:"Arizona",fips:"04",vcDeals:211,allocation:87000000},
+  {name:"Arkansas",fips:"05",vcDeals:38,allocation:46000000},
+  {name:"California",fips:"06",vcDeals:6377,allocation:200000000},
+  {name:"Colorado",fips:"08",vcDeals:557,allocation:59800000},
+  {name:"Connecticut",fips:"09",vcDeals:196,allocation:119400000},
+  {name:"Delaware",fips:"10",vcDeals:560,allocation:30000000},
+  {name:"District of Columbia",fips:"11",vcDeals:114,allocation:26000000},
+  {name:"Florida",fips:"12",vcDeals:831,allocation:130000000},
+  {name:"Georgia",fips:"13",vcDeals:327,allocation:50000000},
+  {name:"Hawaii",fips:"15",vcDeals:25,allocation:20500000},
+  {name:"Idaho",fips:"16",vcDeals:40,allocation:0},
+  {name:"Illinois",fips:"17",vcDeals:489,allocation:114800000},
+  {name:"Indiana",fips:"18",vcDeals:162,allocation:75400000},
+  {name:"Iowa",fips:"19",vcDeals:58,allocation:40000000},
+  {name:"Kansas",fips:"20",vcDeals:49,allocation:27800000},
+  {name:"Kentucky",fips:"21",vcDeals:65,allocation:82000000},
+  {name:"Louisiana",fips:"22",vcDeals:32,allocation:91600000},
+  {name:"Maine",fips:"23",vcDeals:36,allocation:28200000},
+  {name:"Maryland",fips:"24",vcDeals:242,allocation:62000000},
+  {name:"Massachusetts",fips:"25",vcDeals:1172,allocation:46000000},
+  {name:"Michigan",fips:"26",vcDeals:237,allocation:75000000},
+  {name:"Minnesota",fips:"27",vcDeals:203,allocation:24500000},
+  {name:"Mississippi",fips:"28",vcDeals:9,allocation:26000000},
+  {name:"Missouri",fips:"29",vcDeals:129,allocation:70500000},
+  {name:"Montana",fips:"30",vcDeals:33,allocation:0},
+  {name:"Nebraska",fips:"31",vcDeals:59,allocation:32000000},
+  {name:"Nevada",fips:"32",vcDeals:138,allocation:60000000},
+  {name:"New Hampshire",fips:"33",vcDeals:55,allocation:0},
+  {name:"New Jersey",fips:"34",vcDeals:311,allocation:65000000},
+  {name:"New Mexico",fips:"35",vcDeals:42,allocation:22500000},
+  {name:"New York",fips:"36",vcDeals:2684,allocation:219300000},
+  {name:"North Carolina",fips:"37",vcDeals:365,allocation:31900000},
+  {name:"North Dakota",fips:"38",vcDeals:11,allocation:58600000},
+  {name:"Ohio",fips:"39",vcDeals:216,allocation:111700000},
+  {name:"Oklahoma",fips:"40",vcDeals:39,allocation:48900000},
+  {name:"Oregon",fips:"41",vcDeals:211,allocation:30000000},
+  {name:"Pennsylvania",fips:"42",vcDeals:392,allocation:125000000},
+  {name:"Rhode Island",fips:"44",vcDeals:35,allocation:31500000},
+  {name:"South Carolina",fips:"45",vcDeals:74,allocation:51000000},
+  {name:"South Dakota",fips:"46",vcDeals:8,allocation:0},
+  {name:"Tennessee",fips:"47",vcDeals:167,allocation:70000000},
+  {name:"Texas",fips:"48",vcDeals:1141,allocation:0},
+  {name:"Utah",fips:"49",vcDeals:266,allocation:0},
+  {name:"Vermont",fips:"50",vcDeals:35,allocation:0},
+  {name:"Virginia",fips:"51",vcDeals:310,allocation:173400000},
+  {name:"Washington",fips:"53",vcDeals:574,allocation:64000000},
+  {name:"West Virginia",fips:"54",vcDeals:14,allocation:36000000},
+  {name:"Wisconsin",fips:"55",vcDeals:115,allocation:50000000},
+  {name:"Wyoming",fips:"56",vcDeals:53,allocation:58400000}
+];
+
+const dataByFips = {};
+stateData.forEach(d => { dataByFips[d.fips.padStart(2,'0')] = d; });
+
+const width = 960, height = 580;
+const svg = d3.select("#map").append("svg")
+  .attr("viewBox", `0 0 ${width} ${height}`)
+  .attr("preserveAspectRatio", "xMidYMid meet");
+
+const projection = d3.geoAlbersUsa().scale(1280).translate([width/2, height/2]);
+const path = d3.geoPath().projection(projection);
+
+// Color scale — log for VC deals
+const deals = stateData.map(d => d.vcDeals).filter(d => d > 0);
+const logScale = d3.scaleSequential()
+  .domain([Math.log(1), Math.log(d3.max(deals))])
+  .interpolator(d3.interpolate("#dbeafe", "#0a2e52"));
+
+// Bubble scale
+const maxAlloc = d3.max(stateData, d => d.allocation);
+const bubbleScale = d3.scaleSqrt().domain([0, maxAlloc]).range([0, 28]);
+
+const tooltip = document.getElementById("tooltip");
+const ttState = document.getElementById("tt-state");
+const ttDeals = document.getElementById("tt-deals");
+const ttAlloc = document.getElementById("tt-alloc");
+
+function showTooltip(event, d) {
+  const info = dataByFips[String(d.id).padStart(2,'0')];
+  if (!info) return;
+  ttState.textContent = info.name;
+  ttDeals.textContent = info.vcDeals.toLocaleString();
+  ttAlloc.textContent = info.allocation > 0
+    ? "$" + (info.allocation / 1e6).toFixed(1) + "M"
+    : "None (control)";
+  tooltip.classList.add("visible");
+  moveTooltip(event);
+}
+
+function moveTooltip(event) {
+  const x = event.clientX, y = event.clientY;
+  const tw = 240, th = 90;
+  tooltip.style.left = (x + 14 + tw > window.innerWidth ? x - tw - 14 : x + 14) + "px";
+  tooltip.style.top = (y - 20) + "px";
+}
+
+function hideTooltip() { tooltip.classList.remove("visible"); }
+
+fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")
+  .then(r => r.json())
+  .then(us => {
+    const states = topojson.feature(us, us.objects.states);
+    const mesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
+
+    // Draw choropleth
+    svg.append("g").selectAll("path")
+      .data(states.features)
+      .join("path")
+      .attr("class", "state-path")
+      .attr("d", path)
+      .attr("fill", d => {
+        const info = dataByFips[String(d.id).padStart(2,'0')];
+        if (!info) return "#d0d7de";
+        return logScale(Math.log(Math.max(info.vcDeals, 1)));
+      })
+      .on("mousemove", (event, d) => { showTooltip(event, d); moveTooltip(event); })
+      .on("mouseleave", hideTooltip);
+
+    // State borders
+    svg.append("path")
+      .datum(mesh)
+      .attr("fill", "none")
+      .attr("stroke", "#ffffff")
+      .attr("stroke-width", 0.8)
+      .attr("d", path);
+
+    // Bubble layer — centroids
+    const bubbleData = states.features.map(d => {
+      const info = dataByFips[String(d.id).padStart(2,'0')];
+      const centroid = path.centroid(d);
+      return { ...info, cx: centroid[0], cy: centroid[1] };
+    }).filter(d => d && d.allocation > 0 && !isNaN(d.cx));
+
+    svg.append("g").selectAll("circle")
+      .data(bubbleData.sort((a, b) => b.allocation - a.allocation))
+      .join("circle")
+      .attr("class", "bubble")
+      .attr("cx", d => d.cx)
+      .attr("cy", d => d.cy)
+      .attr("r", d => bubbleScale(d.allocation));
+  });
+</script>
+</body>
+</html>

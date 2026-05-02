@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>References · SSBCI VC Study</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0a2e52;
+      --blue:   #1b5fa6;
+      --sky:    #58a6ff;
+      --bg:     #f7f9fc;
+      --white:  #ffffff;
+      --text:   #0d1117;
+      --muted:  #6b7280;
+      --border: #e2e8f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 40px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(91,163,255,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(10,46,82,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-size: 0.63rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--navy);
+      line-height: 1.1;
+      letter-spacing: -0.4px;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.08s ease forwards;
+    }
+
+    header h1 em { font-style: italic; color: var(--blue); }
+
+    .header-sub {
+      margin-top: 10px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.4s 0.16s ease forwards;
+    }
+
+    .back-link {
+      margin-top: 20px;
+      font-size: 0.63rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid rgba(27,95,166,0.3);
+      transition: border-color 0.15s;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.22s ease forwards;
+    }
+
+    .back-link:hover { border-color: var(--blue); }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 52px 24px 80px;
+    }
+
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .ref-count {
+      font-size: 0.6rem;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1px 8px;
+    }
+
+    /* ── CATEGORY GROUPS ── */
+    .ref-group {
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    .ref-group:nth-child(1) { animation-delay: 0.1s; }
+    .ref-group:nth-child(2) { animation-delay: 0.18s; }
+    .ref-group:nth-child(3) { animation-delay: 0.26s; }
+    .ref-group:nth-child(4) { animation-delay: 0.34s; }
+    .ref-group:nth-child(5) { animation-delay: 0.42s; }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .group-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-green  { background: #16a34a; }
+    .dot-blue   { background: var(--blue); }
+    .dot-amber  { background: #d97706; }
+    .dot-teal   { background: #0891b2; }
+    .dot-grey   { background: #94a3b8; }
+
+    .group-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── REFERENCE ENTRIES ── */
+    .ref-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ref-entry {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px 18px 52px;
+      position: relative;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .ref-entry:hover {
+      border-color: rgba(27,95,166,0.3);
+      box-shadow: 0 3px 12px rgba(10,46,82,0.06);
+    }
+
+    .ref-number {
+      position: absolute;
+      left: 18px;
+      top: 19px;
+      font-size: 0.6rem;
+      color: #c0ccd8;
+      font-weight: 500;
+      width: 20px;
+      text-align: right;
+      letter-spacing: 0;
+    }
+
+    .ref-authors {
+      font-size: 0.72rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 2px;
+    }
+
+    .ref-authors strong { font-weight: 500; }
+
+    .ref-title {
+      font-size: 0.72rem;
+      color: var(--navy);
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .ref-source {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .ref-doi {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.62rem;
+      color: var(--blue);
+      text-decoration: none;
+      letter-spacing: 0;
+      transition: color 0.15s;
+      word-break: break-all;
+    }
+
+    .ref-doi:hover { color: var(--navy); text-decoration: underline; }
+
+    .ref-doi-icon {
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .no-link {
+      font-size: 0.62rem;
+      color: #c0ccd8;
+      font-style: italic;
+    }
+
+    /* ── APA NOTE ── */
+    .apa-note {
+      margin-top: 36px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--navy);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.5s ease forwards;
+    }
+
+    .apa-note strong { color: var(--text); font-weight: 500; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 28px;
+      font-size: 0.62rem;
+      color: #cbd5e1;
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Research Visualization · SSBCI Study</div>
+  <h1>References</h1>
+  <p class="header-sub">All sources cited in the SSBCI Venture Capital study · APA 7th Edition</p>
+  <a href="index.html" class="back-link">← Back to Home</a>
+</header>
+
+<main>
+
+  <div class="section-label">
+    All References
+    <span class="ref-count">19 sources</span>
+  </div>
+
+  <!-- ── GROUP 1: Venture Capital & Green Innovation ── -->
+  <div class="ref-group">
+    <div class="group-header">
+      <div class="group-dot dot-green"></div>
+      <div class="group-title">Venture Capital &amp; Green Innovation</div>
+    </div>
+    <div class="ref-list">
+
+      <div class="ref-entry">
+        <div class="ref-number">1</div>
+        <div class="ref-authors">Bellucci, A., Fatica, S., Georgakaki, A., Gucciardi, G., Letout, S., &amp; Pasimeni, F. (2023).</div>
+        <div class="ref-title">Venture capital financing and green patenting.</div>
+        <div class="ref-source"><em>Industry and Innovation, 30</em>(7), 947–983.</div>
+        <a href="https://doi.org/10.1080/13662716.2023.2228717" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1080/13662716.2023.2228717
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">2</div>
+        <div class="ref-authors">Bendig, D., Kleine-Stegemann, L., Schulz, C., &amp; Eckardt, D. (2022).</div>
+        <div class="ref-title">The effect of green startup investments on incumbents' green innovation output.</div>
+        <div class="ref-source"><em>Journal of Cleaner Production, 376</em>, Article 134316.</div>
+        <a href="https://doi.org/10.1016/j.jclepro.2022.134316" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.jclepro.2022.134316
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">3</div>
+        <div class="ref-authors">Dechezleprêtre, A., &amp; Kelly, P. (2025).</div>
+        <div class="ref-title">Venture capital, innovation and business success in cleantech startups: The new green economy.</div>
+        <div class="ref-source">OECD Science, Technology and Industry Working Papers, No. 2025/13. OECD Publishing.</div>
+        <a href="https://dx.doi.org/10.1787/ba73f647-en" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://dx.doi.org/10.1787/ba73f647-en
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">4</div>
+        <div class="ref-authors">Dhayal, K. S., Giri, A. K., Esposito, L., &amp; Agrawal, S. (2023).</div>
+        <div class="ref-title">Mapping the significance of green venture capital for sustainable development: A systematic review and future research agenda.</div>
+        <div class="ref-source"><em>Journal of Cleaner Production, 396</em>, Article 136489.</div>
+        <a href="https://doi.org/10.1016/j.jclepro.2023.136489" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.jclepro.2023.136489
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">5</div>
+        <div class="ref-authors">Lei, X., &amp; Xu, X. (2025).</div>
+        <div class="ref-title">The "spider web" of venture capital: An invisible force driving corporate green technology innovation.</div>
+        <div class="ref-source"><em>Technology in Society, 82</em>, Article 102882.</div>
+        <a href="https://doi.org/10.1016/j.techsoc.2025.102882" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.techsoc.2025.102882
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">6</div>
+        <div class="ref-authors">Mukherjee, A., Owen, R., Scott, J. M., &amp; Lyon, F. (2024).</div>
+        <div class="ref-title">Financing green innovation startups: A systematic literature review on early-stage SME funding.</div>
+        <div class="ref-source"><em>Venture Capital: An International Journal of Entrepreneurial Finance.</em> Advance online publication.</div>
+        <a href="https://doi.org/10.1080/13691066.2024.2410730" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1080/13691066.2024.2410730
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── GROUP 2: Government VC & Public Investment ── -->
+  <div class="ref-group">
+    <div class="group-header">
+      <div class="group-dot dot-blue"></div>
+      <div class="group-title">Government Venture Capital &amp; Public Investment</div>
+    </div>
+    <div class="ref-list">
+
+      <div class="ref-entry">
+        <div class="ref-number">7</div>
+        <div class="ref-authors">Berger, M., Criscuolo, C., &amp; Dechezleprêtre, A. (2025).</div>
+        <div class="ref-title">Understanding government venture capital: A primer and a taxonomy.</div>
+        <div class="ref-source">OECD Science, Technology and Industry Working Papers, No. 2025/06. OECD Publishing.</div>
+        <a href="https://dx.doi.org/10.1787/2157a5b3-en" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://dx.doi.org/10.1787/2157a5b3-en
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">8</div>
+        <div class="ref-authors">Colombo, M. G., Cumming, D. J., &amp; Vismara, S. (2016).</div>
+        <div class="ref-title">Governmental venture capital for innovative young firms.</div>
+        <div class="ref-source"><em>Journal of Technology Transfer, 41</em>(1), 10–24.</div>
+        <a href="https://doi.org/10.1007/s10961-014-9380-9" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1007/s10961-014-9380-9
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">9</div>
+        <div class="ref-authors">Du, Q., Li, Z., Du, M., &amp; Yang, T. (2024).</div>
+        <div class="ref-title">Government venture capital and innovation performance in alternative energy production: The moderating role of environmental regulation and capital market activity.</div>
+        <div class="ref-source"><em>Energy Economics, 129</em>, Article 107196.</div>
+        <a href="https://doi.org/10.1016/j.eneco.2023.107196" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.eneco.2023.107196
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">10</div>
+        <div class="ref-authors">Francois, J. N., Konte, M., &amp; Ruch, F. U. (2024).</div>
+        <div class="ref-title">"Crowding in" effect of public investment on private investment revisited.</div>
+        <div class="ref-source">World Bank Policy Research Working Paper No. 10881. World Bank Group.</div>
+        <a href="https://doi.org/10.1596/1813-9450-10881" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1596/1813-9450-10881
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">11</div>
+        <div class="ref-authors">Li, J.-J., Fung, H.-G., &amp; An, S. (2024).</div>
+        <div class="ref-title">Government venture capital funds: Balancing the impact of social and financial goals on startups.</div>
+        <div class="ref-source"><em>China Economic Review, 85</em>, Article 102185.</div>
+        <a href="https://doi.org/10.1016/j.chieco.2024.102185" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.chieco.2024.102185
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">12</div>
+        <div class="ref-authors">Matvejevs, O., &amp; Tkacevs, O. (2025).</div>
+        <div class="ref-title">Invest one – get two extra: Public investment crowds in private investment.</div>
+        <div class="ref-source"><em>European Journal of Political Economy, 90</em>, Article 102384.</div>
+        <a href="https://doi.org/10.1016/j.ejpoleco.2023.102384" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.ejpoleco.2023.102384
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">13</div>
+        <div class="ref-authors">Owen, R. (2023).</div>
+        <div class="ref-title">Lessons from government venture capital funds to enable transition to a low-carbon economy: The U.K. experience.</div>
+        <div class="ref-source"><em>Venture Capital: An International Journal of Entrepreneurial Finance, 25</em>(2), 195–218.</div>
+        <span class="no-link">No DOI available</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── GROUP 3: Methodology ── -->
+  <div class="ref-group">
+    <div class="group-header">
+      <div class="group-dot dot-teal"></div>
+      <div class="group-title">Econometric Methodology</div>
+    </div>
+    <div class="ref-list">
+
+      <div class="ref-entry">
+        <div class="ref-number">14</div>
+        <div class="ref-authors">Callaway, B., &amp; Sant'Anna, P. H. C. (2021).</div>
+        <div class="ref-title">Difference-in-differences with multiple time periods.</div>
+        <div class="ref-source"><em>Journal of Econometrics, 225</em>(2), 200–230.</div>
+        <a href="https://doi.org/10.1016/j.jeconom.2020.12.001" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.jeconom.2020.12.001
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── GROUP 4: Patent Classification ── -->
+  <div class="ref-group">
+    <div class="group-header">
+      <div class="group-dot dot-amber"></div>
+      <div class="group-title">Green Patent Classification</div>
+    </div>
+    <div class="ref-list">
+
+      <div class="ref-entry">
+        <div class="ref-number">15</div>
+        <div class="ref-authors">Angelucci, S., Hurtado-Albir, F. J., &amp; Volpe, A. (2018).</div>
+        <div class="ref-title">Supporting global initiatives on climate change: The EPO's "Y02-Y04S" tagging scheme.</div>
+        <div class="ref-source"><em>World Patent Information, 54</em>, S85–S92.</div>
+        <a href="https://doi.org/10.1016/j.wpi.2017.04.006" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.wpi.2017.04.006
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">16</div>
+        <div class="ref-authors">Rainville, A., Dikker, I., &amp; Buggenhagen, M. (2025).</div>
+        <div class="ref-title">Tracking innovation via green patent classification systems: Are we truly capturing circular economy progress?</div>
+        <div class="ref-source"><em>Journal of Cleaner Production, 486</em>, Article 144385.</div>
+        <a href="https://doi.org/10.1016/j.jclepro.2024.144385" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://doi.org/10.1016/j.jclepro.2024.144385
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── GROUP 5: Policy & Industry Reports ── -->
+  <div class="ref-group">
+    <div class="group-header">
+      <div class="group-dot dot-grey"></div>
+      <div class="group-title">Policy Reports &amp; Industry Data</div>
+    </div>
+    <div class="ref-list">
+
+      <div class="ref-entry">
+        <div class="ref-number">17</div>
+        <div class="ref-authors">Hasna, Z., Hatton, H., Jaumotte, F., Kim, J., Mohaddes, K., &amp; Pienknagura, S. (2025).</div>
+        <div class="ref-title">The drivers and macroeconomic impacts of low-carbon innovation: A cross-country exploration.</div>
+        <div class="ref-source">IMF Working Paper No. 2025/130. International Monetary Fund.</div>
+        <span class="no-link">No DOI available</span>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">18</div>
+        <div class="ref-authors">National Venture Capital Association &amp; PitchBook. (2025).</div>
+        <div class="ref-title">Q3 2025 PitchBook-NVCA Venture Monitor.</div>
+        <div class="ref-source">NVCA.</div>
+        <a href="https://nvca.org/pitchbook-nvca-venture-monitor/" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://nvca.org/pitchbook-nvca-venture-monitor/
+        </a>
+      </div>
+
+      <div class="ref-entry">
+        <div class="ref-number">19</div>
+        <div class="ref-authors">U.S. Department of the Treasury. (2023).</div>
+        <div class="ref-title">State Small Business Credit Initiative in action.</div>
+        <div class="ref-source">U.S. Department of the Treasury.</div>
+        <a href="https://home.treasury.gov/system/files/256/SSBCI-In-Action-Report-October-2023.pdf" target="_blank" class="ref-doi">
+          <span class="ref-doi-icon">🔗</span>https://home.treasury.gov/system/files/256/SSBCI-In-Action-Report-October-2023.pdf
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="apa-note">
+    <strong>Citation format:</strong> All references are formatted in APA 7th Edition. DOI links open in a new tab. Two sources (Owen, 2023; Hasna et al., 2025) do not have publicly available DOIs and are cited without hyperlinks.
+  </div>
+
+</main>
+
+<footer>
+  SSBCI Venture Capital Research · References · APA 7th Edition
+</footer>
+
+</body>
+</html>

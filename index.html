@@ -297,7 +297,19 @@
       line-height: 1.8;
     }
 
-    /* ── MAP CARDS ── */
+    .section-sublabel {
+      font-size: 0.6rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding-left: 2px;
+    }
+
+    .icon-purple { background: rgba(124,58,237,0.08); }
+    .tag.purple  { background: rgba(124,58,237,0.07); border-color: rgba(124,58,237,0.2); color: #6d28d9; }
+
+    /* ── CARDS ── */
     .cards { display: flex; flex-direction: column; gap: 20px; }
 
     .card {
@@ -505,15 +517,15 @@
 <body>
 
 <header>
-  <div class="eyebrow">Research Visualization · MBA/MA Sustainability Thesis · Hofstra University</div>
+  <div class="eyebrow">Research Visualization · SSBCI Study</div>
   <h1>State-Backed Venture Capital<br>and <em>Sustainable Innovation</em></h1>
   <p class="header-desc">
-    Interactive U.S. state-level maps exploring the State Small Business Credit Initiative
-    and State-Backed Venture Capital.
+    Interactive U.S. state-level maps exploring how the State Small Business Credit Initiative
+    directed venture capital toward green technology innovation.
   </p>
   <div class="nav-links">
     <a href="#executive-summary" class="nav-link">Executive Summary</a>
-    <a href="#maps" class="nav-link">Maps</a>
+    <a href="#visualizations" class="nav-link">Visualizations</a>
     <a href="#references" class="nav-link">References</a>
   </div>
 </header>
@@ -618,10 +630,38 @@
     </div>
   </div>
 
-  <!-- ── MAPS ── -->
-  <div id="maps" class="section-label">Interactive Maps</div>
+  <!-- ── VISUALIZATIONS ── -->
+  <div id="visualizations" class="section-label">Visualizations</div>
 
-  <div class="cards">
+  <!-- Analytical Framework -->
+  <div class="section-sublabel">Analytical Framework</div>
+
+  <div class="cards" style="margin-bottom: 32px;">
+
+    <a href="analytical_framework_poster.html" class="card">
+      <div class="card-icon icon-purple">⬡</div>
+      <div class="card-body">
+        <div class="card-title">Analytical Framework Poster</div>
+        <div class="card-desc">
+          A structured diagram of the research design — mapping how SSBCI VC allocations
+          flow through to VC ecosystem outcomes, green patent activity, and renewable energy generation,
+          with the DiD identification strategy illustrated.
+        </div>
+        <div class="card-tags">
+          <span class="tag purple">Framework</span>
+          <span class="tag">DiD Design</span>
+          <span class="tag">Causal Chain</span>
+        </div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+
+  <!-- Interactive Maps -->
+  <div class="section-sublabel">Interactive Maps</div>
+
+  <div id="maps" class="cards">
 
     <a href="ssbci_maps_combined.html" class="card">
       <div class="card-icon icon-blue">⊞</div>
@@ -709,21 +749,6 @@
       <a href="references.html" class="ref-link">
         Full References Page →
       </a>
-    </div>
-    <div class="references-body">
-      <div class="ref-icon">📄</div>
-      <div class="ref-text">
-        A complete references page will be linked here when available. It will include all cited
-        academic papers, government data sources, and methodology references used in this study.
-        <div class="ref-sources">
-          <span class="ref-source-tag">Callaway &amp; Sant'Anna (2021)</span>
-          <span class="ref-source-tag">PatentsView Bulk TSV</span>
-          <span class="ref-source-tag">U.S. Treasury SSBCI Tables</span>
-          <span class="ref-source-tag">EIA State Energy Data System</span>
-          <span class="ref-source-tag">Crunchbase Startup Panel</span>
-          <span class="ref-source-tag">SBIR.gov API</span>
-        </div>
-      </div>
     </div>
   </div>
 

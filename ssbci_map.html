@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-   
+ 
   body {
     background: #ffffff;
     color: #1a1a2e;
@@ -20,12 +20,12 @@
     align-items: center;
     padding: 32px 24px 48px;
   }
-
+ 
   .header {
     text-align: center;
     margin-bottom: 28px;
   }
-
+ 
   .header h1 {
     font-family: 'DM Serif Display', serif;
     font-size: 2rem;
@@ -33,39 +33,39 @@
     letter-spacing: -0.5px;
     line-height: 1.1;
   }
-
+ 
   .header h1 em {
     font-style: italic;
     color: #58a6ff;
   }
-
+ 
   .header p {
     margin-top: 8px;
     font-size: 0.72rem;
     color: #555e6c;
   }
-
+ 
   .map-container {
     position: relative;
     width: 100%;
     max-width: 960px;
   }
-
+ 
   #map svg {
     width: 100%;
     height: auto;
     display: block;
   }
-
+ 
   .state-path {
     stroke: #ffffff;
     stroke-width: 0.6;
     transition: opacity 0.15s;
     cursor: pointer;
   }
-
+ 
   .state-path:hover { opacity: 0.82; stroke-width: 1.5; stroke: #f0f6ff; }
-
+ 
   .bubble {
     fill: #f97316;
     fill-opacity: 0.55;
@@ -74,7 +74,7 @@
     pointer-events: none;
     transition: r 0.3s;
   }
-
+ 
   .legends {
     display: flex;
     gap: 40px;
@@ -82,9 +82,9 @@
     flex-wrap: wrap;
     justify-content: center;
   }
-
+ 
   .legend-block { flex: 0 0 auto; }
-
+ 
   .legend-title {
     font-size: 0.65rem;
     letter-spacing: 0.12em;
@@ -92,20 +92,20 @@
     color: #555e6c;
     margin-bottom: 8px;
   }
-
+ 
   .choropleth-ramp {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-
+ 
   .ramp-bar {
     width: 180px;
     height: 10px;
     border-radius: 2px;
     background: linear-gradient(to right, #dbeafe, #93c5fd, #3b9ede, #1b5fa6, #0a2e52);
   }
-
+ 
   .ramp-labels {
     display: flex;
     justify-content: space-between;
@@ -114,33 +114,33 @@
     font-size: 0.62rem;
     color: #555e6c;
   }
-
+ 
   .bubble-legend {
     display: flex;
     align-items: flex-end;
     gap: 16px;
   }
-
+ 
   .bubble-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
   }
-
+ 
   .bubble-circle {
     background: #f97316;
     opacity: 0.6;
     border-radius: 50%;
     border: 1px solid #fb923c;
   }
-
+ 
   .bubble-label {
     font-size: 0.6rem;
     color: #555e6c;
     white-space: nowrap;
   }
-
+ 
   /* Tooltip */
   .tooltip {
     position: fixed;
@@ -154,16 +154,16 @@
     z-index: 1000;
     max-width: 240px;
   }
-
+ 
   .tooltip.visible { opacity: 1; }
-
+ 
   .tt-state {
     font-family: 'DM Serif Display', serif;
     font-size: 1rem;
     color: #0d1117;
     margin-bottom: 8px;
   }
-
+ 
   .tt-row {
     display: flex;
     justify-content: space-between;
@@ -171,21 +171,21 @@
     gap: 16px;
     margin-bottom: 4px;
   }
-
+ 
   .tt-label {
     font-size: 0.62rem;
     color: #555e6c;
   }
-
+ 
   .tt-value {
     font-size: 0.78rem;
     color: #1a1a2e;
     font-weight: 500;
   }
-
+ 
   .tt-dot-vc { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3b9ede; margin-right: 5px; }
   .tt-dot-alloc { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f97316; margin-right: 5px; }
-
+ 
   .note {
     margin-top: 20px;
     font-size: 0.62rem;
@@ -194,19 +194,46 @@
     max-width: 700px;
     line-height: 1.6;
   }
+  .back-home {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.63rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1b5fa6;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 7px 14px;
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .back-home:hover {
+    background: #ffffff;
+    border-color: rgba(27,95,166,0.4);
+    color: #0a2e52;
+    box-shadow: 0 3px 10px rgba(10,46,82,0.1);
+  }
 </style>
 </head>
 <body>
-
+ 
 <div class="header">
   <h1>SSBCI <em>Venture Capital</em> Investment Landscape</h1>
   <p>Pre-Program VC Activity (Choropleth) &nbsp;·&nbsp; SSBCI VC Allocation (Bubbles)</p>
 </div>
-
+ 
 <div class="map-container">
   <div id="map"></div>
 </div>
-
+ 
 <div class="legends">
   <div class="legend-block">
     <div class="legend-title">Pre-SSBCI VC Deal Count</div>
@@ -217,7 +244,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="legend-block">
     <div class="legend-title">SSBCI VC Allocation</div>
     <div class="bubble-legend">
@@ -240,12 +267,12 @@
     </div>
   </div>
 </div>
-
+ 
 <div class="note">
   States shaded by pre-SSBCI VC deal count (log scale). Bubble size encodes SSBCI VC allocation. 
   States with no SSBCI VC allocation (never-treated controls) are shown in dark grey. Hover a state for details.
 </div>
-
+ 
 <div class="tooltip" id="tooltip">
   <div class="tt-state" id="tt-state"></div>
   <div class="tt-row">
@@ -257,7 +284,7 @@
     <span class="tt-value" id="tt-alloc"></span>
   </div>
 </div>
-
+ 
 <script>
 const stateData = [
   {name:"Alabama",fips:"01",vcDeals:69,allocation:32700000},
@@ -312,33 +339,33 @@ const stateData = [
   {name:"Wisconsin",fips:"55",vcDeals:115,allocation:50000000},
   {name:"Wyoming",fips:"56",vcDeals:53,allocation:58400000}
 ];
-
+ 
 const dataByFips = {};
 stateData.forEach(d => { dataByFips[d.fips.padStart(2,'0')] = d; });
-
+ 
 const width = 960, height = 580;
 const svg = d3.select("#map").append("svg")
   .attr("viewBox", `0 0 ${width} ${height}`)
   .attr("preserveAspectRatio", "xMidYMid meet");
-
+ 
 const projection = d3.geoAlbersUsa().scale(1280).translate([width/2, height/2]);
 const path = d3.geoPath().projection(projection);
-
+ 
 // Color scale — log for VC deals
 const deals = stateData.map(d => d.vcDeals).filter(d => d > 0);
 const logScale = d3.scaleSequential()
   .domain([Math.log(1), Math.log(d3.max(deals))])
   .interpolator(d3.interpolate("#dbeafe", "#0a2e52"));
-
+ 
 // Bubble scale
 const maxAlloc = d3.max(stateData, d => d.allocation);
 const bubbleScale = d3.scaleSqrt().domain([0, maxAlloc]).range([0, 28]);
-
+ 
 const tooltip = document.getElementById("tooltip");
 const ttState = document.getElementById("tt-state");
 const ttDeals = document.getElementById("tt-deals");
 const ttAlloc = document.getElementById("tt-alloc");
-
+ 
 function showTooltip(event, d) {
   const info = dataByFips[String(d.id).padStart(2,'0')];
   if (!info) return;
@@ -350,22 +377,22 @@ function showTooltip(event, d) {
   tooltip.classList.add("visible");
   moveTooltip(event);
 }
-
+ 
 function moveTooltip(event) {
   const x = event.clientX, y = event.clientY;
   const tw = 240, th = 90;
   tooltip.style.left = (x + 14 + tw > window.innerWidth ? x - tw - 14 : x + 14) + "px";
   tooltip.style.top = (y - 20) + "px";
 }
-
+ 
 function hideTooltip() { tooltip.classList.remove("visible"); }
-
+ 
 fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")
   .then(r => r.json())
   .then(us => {
     const states = topojson.feature(us, us.objects.states);
     const mesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
-
+ 
     // Draw choropleth
     svg.append("g").selectAll("path")
       .data(states.features)
@@ -379,7 +406,7 @@ fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")
       })
       .on("mousemove", (event, d) => { showTooltip(event, d); moveTooltip(event); })
       .on("mouseleave", hideTooltip);
-
+ 
     // State borders
     svg.append("path")
       .datum(mesh)
@@ -387,14 +414,14 @@ fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")
       .attr("stroke", "#ffffff")
       .attr("stroke-width", 0.8)
       .attr("d", path);
-
+ 
     // Bubble layer — centroids
     const bubbleData = states.features.map(d => {
       const info = dataByFips[String(d.id).padStart(2,'0')];
       const centroid = path.centroid(d);
       return { ...info, cx: centroid[0], cy: centroid[1] };
     }).filter(d => d && d.allocation > 0 && !isNaN(d.cx));
-
+ 
     svg.append("g").selectAll("circle")
       .data(bubbleData.sort((a, b) => b.allocation - a.allocation))
       .join("circle")

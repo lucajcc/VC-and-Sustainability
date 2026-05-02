@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSBCI VC Investment Maps</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ffffff;
+    color: #1a1a2e;
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 48px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: #0d1117;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .page-header h1 em {
+    font-style: italic;
+    color: #58a6ff;
+  }
+
+  .page-header p {
+    margin-top: 8px;
+    font-size: 0.72rem;
+    color: #555e6c;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Shared choropleth legend at top */
+  .shared-legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .shared-legend-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555e6c;
+    white-space: nowrap;
+  }
+
+  .ramp-bar {
+    width: 160px;
+    height: 10px;
+    border-radius: 2px;
+    background: linear-gradient(to right, #dbeafe, #93c5fd, #3b9ede, #1b5fa6, #0a2e52);
+  }
+
+  .ramp-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 160px;
+    margin-top: 3px;
+    font-size: 0.58rem;
+    color: #8b96a5;
+  }
+
+  /* Side-by-side panel */
+  .maps-row {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 1400px;
+    align-items: flex-start;
+  }
+
+  .map-panel {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .map-panel-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: #0d1117;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .map-panel-sub {
+    font-size: 0.62rem;
+    color: #8b96a5;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .map-panel svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Divider */
+  .divider {
+    width: 1px;
+    background: #e8ecf0;
+    align-self: stretch;
+    margin: 32px 0;
+  }
+
+  .state-path {
+    stroke: #ffffff;
+    stroke-width: 0.6;
+    transition: opacity 0.15s;
+    cursor: pointer;
+  }
+
+  .state-path:hover { opacity: 0.82; stroke-width: 1.5; stroke: #e2e8f0; }
+
+  .bubble {
+    fill: #f97316;
+    fill-opacity: 0.55;
+    stroke: #fb923c;
+    stroke-width: 1;
+    pointer-events: none;
+  }
+
+  /* Bubble legends below each map */
+  .bubble-legend {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .bubble-legend-title {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555e6c;
+    margin-bottom: 6px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .bubble-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .bubble-circle {
+    background: #f97316;
+    opacity: 0.6;
+    border-radius: 50%;
+    border: 1px solid #fb923c;
+  }
+
+  .bubble-label {
+    font-size: 0.58rem;
+    color: #8b96a5;
+    white-space: nowrap;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: #f8fafc;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 12px 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 1000;
+    max-width: 240px;
+  }
+
+  .tooltip.visible { opacity: 1; }
+
+  .tt-state {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: #0d1117;
+    margin-bottom: 8px;
+  }
+
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 4px;
+  }
+
+  .tt-label { font-size: 0.62rem; color: #555e6c; }
+  .tt-value { font-size: 0.78rem; color: #1a1a2e; font-weight: 500; }
+  .tt-dot-vc    { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3b9ede; margin-right: 5px; }
+  .tt-dot-alloc { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f97316; margin-right: 5px; }
+
+  .note {
+    margin-top: 24px;
+    font-size: 0.6rem;
+    color: #adb5bd;
+    text-align: center;
+    max-width: 900px;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>SSBCI <em>Venture Capital</em> Investment Landscape</h1>
+  <p>Absolute Allocation vs. Per Capita Allocation · Pre-Program VC Activity (Choropleth)</p>
+</div>
+
+<!-- Shared choropleth legend -->
+<div class="shared-legend">
+  <span class="shared-legend-label">Pre-SSBCI VC Deal Count</span>
+  <div>
+    <div class="ramp-bar"></div>
+    <div class="ramp-labels"><span>Low</span><span>High</span></div>
+  </div>
+</div>
+
+<div class="maps-row">
+
+  <!-- MAP 1: Absolute allocation -->
+  <div class="map-panel">
+    <div class="map-panel-title">Total SSBCI VC Allocation</div>
+    <div class="map-panel-sub">Bubble size = absolute dollars</div>
+    <svg id="map1" viewBox="0 0 960 580" preserveAspectRatio="xMidYMid meet"></svg>
+    <div>
+      <div class="bubble-legend-title">SSBCI VC Allocation</div>
+      <div class="bubble-legend">
+        <div class="bubble-item"><div class="bubble-circle" style="width:12px;height:12px;"></div><div class="bubble-label">$20M</div></div>
+        <div class="bubble-item"><div class="bubble-circle" style="width:20px;height:20px;"></div><div class="bubble-label">$75M</div></div>
+        <div class="bubble-item"><div class="bubble-circle" style="width:30px;height:30px;"></div><div class="bubble-label">$130M</div></div>
+        <div class="bubble-item"><div class="bubble-circle" style="width:40px;height:40px;"></div><div class="bubble-label">$219M</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- MAP 2: Per capita -->
+  <div class="map-panel">
+    <div class="map-panel-title">SSBCI VC Allocation Per Capita</div>
+    <div class="map-panel-sub">Bubble size = dollars per person</div>
+    <svg id="map2" viewBox="0 0 960 580" preserveAspectRatio="xMidYMid meet"></svg>
+    <div>
+      <div class="bubble-legend-title">Allocation Per Capita</div>
+      <div class="bubble-legend">
+        <div class="bubble-item"><div class="bubble-circle" style="width:10px;height:10px;"></div><div class="bubble-label">$5</div></div>
+        <div class="bubble-item"><div class="bubble-circle" style="width:18px;height:18px;"></div><div class="bubble-label">$15</div></div>
+        <div class="bubble-item"><div class="bubble-circle" style="width:28px;height:28px;"></div><div class="bubble-label">$38</div></div>
+        <div class="bubble-item"><div class="bubble-circle" style="width:40px;height:40px;"></div><div class="bubble-label">$100</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  Choropleth shading (light → dark blue) reflects pre-SSBCI VC deal count on a log scale, shared across both maps.
+  Orange bubbles show SSBCI VC allocation — absolute dollars (left) and per capita (right).
+  States with no SSBCI VC allocation (never-treated controls: ID, MT, NH, SD, TX, UT, VT) appear in light grey with no bubble.
+  Hover any state for details.
+</div>
+
+<!-- Single shared tooltip -->
+<div class="tooltip" id="tooltip">
+  <div class="tt-state" id="tt-state"></div>
+  <div class="tt-row">
+    <span class="tt-label"><span class="tt-dot-vc"></span>VC Deals</span>
+    <span class="tt-value" id="tt-deals"></span>
+  </div>
+  <div class="tt-row">
+    <span class="tt-label"><span class="tt-dot-alloc"></span>Total Allocation</span>
+    <span class="tt-value" id="tt-alloc"></span>
+  </div>
+  <div class="tt-row">
+    <span class="tt-label"><span class="tt-dot-alloc"></span>Per Capita</span>
+    <span class="tt-value" id="tt-pc"></span>
+  </div>
+</div>
+
+<script>
+const stateData = [
+  {name:"Alabama",fips:"01",vcDeals:69,allocation:32700000,perCapita:6.40},
+  {name:"Alaska",fips:"02",vcDeals:9,allocation:5200000,perCapita:7.10},
+  {name:"Arizona",fips:"04",vcDeals:211,allocation:87000000,perCapita:11.70},
+  {name:"Arkansas",fips:"05",vcDeals:38,allocation:46000000,perCapita:15.00},
+  {name:"California",fips:"06",vcDeals:6377,allocation:200000000,perCapita:5.10},
+  {name:"Colorado",fips:"08",vcDeals:557,allocation:59800000,perCapita:10.20},
+  {name:"Connecticut",fips:"09",vcDeals:196,allocation:119400000,perCapita:32.90},
+  {name:"Delaware",fips:"10",vcDeals:560,allocation:30000000,perCapita:29.20},
+  {name:"District of Columbia",fips:"11",vcDeals:114,allocation:26000000,perCapita:38.30},
+  {name:"Florida",fips:"12",vcDeals:831,allocation:130000000,perCapita:5.70},
+  {name:"Georgia",fips:"13",vcDeals:327,allocation:50000000,perCapita:4.50},
+  {name:"Hawaii",fips:"15",vcDeals:25,allocation:20500000,perCapita:14.30},
+  {name:"Idaho",fips:"16",vcDeals:40,allocation:0,perCapita:0},
+  {name:"Illinois",fips:"17",vcDeals:489,allocation:114800000,perCapita:9.10},
+  {name:"Indiana",fips:"18",vcDeals:162,allocation:75400000,perCapita:11.00},
+  {name:"Iowa",fips:"19",vcDeals:58,allocation:40000000,perCapita:12.50},
+  {name:"Kansas",fips:"20",vcDeals:49,allocation:27800000,perCapita:9.40},
+  {name:"Kentucky",fips:"21",vcDeals:65,allocation:82000000,perCapita:18.10},
+  {name:"Louisiana",fips:"22",vcDeals:32,allocation:91600000,perCapita:19.90},
+  {name:"Maine",fips:"23",vcDeals:36,allocation:28200000,perCapita:20.20},
+  {name:"Maryland",fips:"24",vcDeals:242,allocation:62000000,perCapita:10.00},
+  {name:"Massachusetts",fips:"25",vcDeals:1172,allocation:46000000,perCapita:6.50},
+  {name:"Michigan",fips:"26",vcDeals:237,allocation:75000000,perCapita:7.50},
+  {name:"Minnesota",fips:"27",vcDeals:203,allocation:24500000,perCapita:4.30},
+  {name:"Mississippi",fips:"28",vcDeals:9,allocation:26000000,perCapita:8.80},
+  {name:"Missouri",fips:"29",vcDeals:129,allocation:70500000,perCapita:11.40},
+  {name:"Montana",fips:"30",vcDeals:33,allocation:0,perCapita:0},
+  {name:"Nebraska",fips:"31",vcDeals:59,allocation:32000000,perCapita:16.20},
+  {name:"Nevada",fips:"32",vcDeals:138,allocation:60000000,perCapita:18.80},
+  {name:"New Hampshire",fips:"33",vcDeals:55,allocation:0,perCapita:0},
+  {name:"New Jersey",fips:"34",vcDeals:311,allocation:65000000,perCapita:7.00},
+  {name:"New Mexico",fips:"35",vcDeals:42,allocation:22500000,perCapita:10.60},
+  {name:"New York",fips:"36",vcDeals:2684,allocation:219300000,perCapita:11.10},
+  {name:"North Carolina",fips:"37",vcDeals:365,allocation:31900000,perCapita:3.00},
+  {name:"North Dakota",fips:"38",vcDeals:11,allocation:58600000,perCapita:74.80},
+  {name:"Ohio",fips:"39",vcDeals:216,allocation:111700000,perCapita:9.50},
+  {name:"Oklahoma",fips:"40",vcDeals:39,allocation:48900000,perCapita:12.10},
+  {name:"Oregon",fips:"41",vcDeals:211,allocation:30000000,perCapita:7.10},
+  {name:"Pennsylvania",fips:"42",vcDeals:392,allocation:125000000,perCapita:9.60},
+  {name:"Rhode Island",fips:"44",vcDeals:35,allocation:31500000,perCapita:28.60},
+  {name:"South Carolina",fips:"45",vcDeals:74,allocation:51000000,perCapita:9.60},
+  {name:"South Dakota",fips:"46",vcDeals:8,allocation:0,perCapita:0},
+  {name:"Tennessee",fips:"47",vcDeals:167,allocation:70000000,perCapita:9.80},
+  {name:"Texas",fips:"48",vcDeals:1141,allocation:0,perCapita:0},
+  {name:"Utah",fips:"49",vcDeals:266,allocation:0,perCapita:0},
+  {name:"Vermont",fips:"50",vcDeals:35,allocation:0,perCapita:0},
+  {name:"Virginia",fips:"51",vcDeals:310,allocation:173400000,perCapita:19.90},
+  {name:"Washington",fips:"53",vcDeals:574,allocation:64000000,perCapita:8.20},
+  {name:"West Virginia",fips:"54",vcDeals:14,allocation:36000000,perCapita:20.30},
+  {name:"Wisconsin",fips:"55",vcDeals:115,allocation:50000000,perCapita:8.50},
+  {name:"Wyoming",fips:"56",vcDeals:53,allocation:58400000,perCapita:100.10}
+];
+
+const dataByFips = {};
+stateData.forEach(d => { dataByFips[d.fips.padStart(2,'0')] = d; });
+
+const W = 960, H = 580;
+const projection = d3.geoAlbersUsa().scale(1280).translate([W/2, H/2]);
+const pathGen = d3.geoPath().projection(projection);
+
+// Shared color scale
+const deals = stateData.map(d => d.vcDeals).filter(d => d > 0);
+const logScale = d3.scaleSequential()
+  .domain([Math.log(1), Math.log(d3.max(deals))])
+  .interpolator(d3.interpolate("#dbeafe", "#0a2e52"));
+
+// Bubble scales
+const maxAlloc = d3.max(stateData, d => d.allocation);
+const bubbleScaleAlloc = d3.scaleSqrt().domain([0, maxAlloc]).range([0, 28]);
+
+const maxPerCapita = d3.max(stateData, d => d.perCapita);
+const bubbleScalePC = d3.scaleSqrt().domain([0, maxPerCapita]).range([0, 28]);
+
+// Tooltip
+const tooltip = document.getElementById("tooltip");
+const ttState = document.getElementById("tt-state");
+const ttDeals = document.getElementById("tt-deals");
+const ttAlloc = document.getElementById("tt-alloc");
+const ttPC    = document.getElementById("tt-pc");
+
+function showTooltip(event, d) {
+  const info = dataByFips[String(d.id).padStart(2,'0')];
+  if (!info) return;
+  ttState.textContent = info.name;
+  ttDeals.textContent = info.vcDeals.toLocaleString();
+  ttAlloc.textContent = info.allocation > 0 ? "$" + (info.allocation / 1e6).toFixed(1) + "M" : "None (control)";
+  ttPC.textContent    = info.perCapita > 0  ? "$" + info.perCapita.toFixed(2) + " / person"  : "None (control)";
+  tooltip.classList.add("visible");
+  moveTooltip(event);
+}
+
+function moveTooltip(event) {
+  const x = event.clientX, y = event.clientY;
+  const tw = 240;
+  tooltip.style.left = (x + 14 + tw > window.innerWidth ? x - tw - 14 : x + 14) + "px";
+  tooltip.style.top  = (y - 20) + "px";
+}
+
+function hideTooltip() { tooltip.classList.remove("visible"); }
+
+function drawMap(svgId, bubbleField, bubbleScale) {
+  const svg = d3.select("#" + svgId);
+
+  fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json")
+    .then(r => r.json())
+    .then(us => {
+      const states = topojson.feature(us, us.objects.states);
+      const mesh   = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
+
+      svg.append("g").selectAll("path")
+        .data(states.features)
+        .join("path")
+        .attr("class", "state-path")
+        .attr("d", pathGen)
+        .attr("fill", d => {
+          const info = dataByFips[String(d.id).padStart(2,'0')];
+          if (!info) return "#d0d7de";
+          return logScale(Math.log(Math.max(info.vcDeals, 1)));
+        })
+        .on("mousemove", (event, d) => { showTooltip(event, d); moveTooltip(event); })
+        .on("mouseleave", hideTooltip);
+
+      svg.append("path")
+        .datum(mesh)
+        .attr("fill", "none")
+        .attr("stroke", "#ffffff")
+        .attr("stroke-width", 0.8)
+        .attr("d", pathGen);
+
+      const bubbleData = states.features.map(d => {
+        const info = dataByFips[String(d.id).padStart(2,'0')];
+        const centroid = pathGen.centroid(d);
+        return { ...info, cx: centroid[0], cy: centroid[1] };
+      }).filter(d => d && d[bubbleField] > 0 && !isNaN(d.cx));
+
+      svg.append("g").selectAll("circle")
+        .data(bubbleData.sort((a, b) => b[bubbleField] - a[bubbleField]))
+        .join("circle")
+        .attr("class", "bubble")
+        .attr("cx", d => d.cx)
+        .attr("cy", d => d.cy)
+        .attr("r",  d => bubbleScale(d[bubbleField]));
+    });
+}
+
+drawMap("map1", "allocation", bubbleScaleAlloc);
+drawMap("map2", "perCapita",  bubbleScalePC);
+</script>
+</body>
+</html>
